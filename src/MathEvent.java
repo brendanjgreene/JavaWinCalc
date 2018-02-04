@@ -10,6 +10,10 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 public class MathEvent implements ActionListener, ItemListener, MouseListener{
 	
 		// Initialize temporary String field values
@@ -31,25 +35,22 @@ public class MathEvent implements ActionListener, ItemListener, MouseListener{
 		public void actionPerformed(ActionEvent e1) {
 			// TODO Auto-generated method stub
 			Button eventSourceBTN = (Button) e1.getSource();
-			
 			String eventLabel=eventSourceBTN.getLabel();
 			if (eventLabel.equals("AC")) {//clears all text
 				localResultTextField.setText("");
+				opt=eventLabel;
+				
 			}else if (eventLabel.equals("+/-")){//removes last digit
 				String current = localResultTextField.getText();
 				if (current.length()>0) {
 					String signCheck=current.substring(0, 1);
-					System.out.println(signCheck);
 					if(signCheck.equals("-")) {
 						current = "+"+current.substring(1);
-					}
-					else if(signCheck.equals("+")) {
+					}else if(signCheck.equals("+")) {
 						current = "-"+current.substring(1);
-					}
-					else {
+					}else {
 						current = "-"+current;
-					}
-					localResultTextField.setText(current);
+					}localResultTextField.setText(current);
 				}
 				
 			}
@@ -64,33 +65,53 @@ public class MathEvent implements ActionListener, ItemListener, MouseListener{
 			}
 			else if (eventLabel.equals("C")) {
 				String current = localResultTextField.getText();
-				System.out.println(current);
 				localResultTextField.setText(current.substring(0, current.length() - 1));
 			}else if(eventLabel.equals("+")||eventLabel.equals("-")|eventLabel.equals("%")||eventLabel.equals("x")||eventLabel.equals("/")){
 				firstNum=Float.parseFloat(localResultTextField.getText());
 				localResultTextField.setText("");
 				opt=eventLabel;
 			}else if(eventLabel.equals("=")){
-				if(opt.equals("+")) {
-					localResultTextField.setText(Float.toString(firstNum+(Float.parseFloat(localResultTextField.getText()))));
-				}if(opt.equals("-")) {
-					localResultTextField.setText(Float.toString(firstNum-(Float.parseFloat(localResultTextField.getText()))));
-				}if(opt.equals("/")) {
-					String zero=localResultTextField.getText();
-					localResultTextField.setText(Float.toString(firstNum/(Float.parseFloat(localResultTextField.getText()))));
-					if (zero.equals("0")) {
-						localResultTextField.setText("No dividing by 0");
+				try {
+					if(opt.equals("+")) {
+						localResultTextField.setText(Float.toString(firstNum+(Float.parseFloat(localResultTextField.getText()))));
+					}if(opt.equals("-")) {
+						localResultTextField.setText(Float.toString(firstNum-(Float.parseFloat(localResultTextField.getText()))));
+					}if(opt.equals("/")) {
+						String zero=localResultTextField.getText();
+						localResultTextField.setText(Float.toString(firstNum/(Float.parseFloat(localResultTextField.getText()))));
+						if (zero.equals("0")) {localResultTextField.setText("No dividing by 0");}
+					}if(opt.equals("x")) {
+						localResultTextField.setText(Float.toString(firstNum*(Float.parseFloat(localResultTextField.getText()))));
+					}if(opt.equals("%")) {
+						String zero=localResultTextField.getText();
+						localResultTextField.setText(Float.toString(firstNum%(Float.parseFloat(localResultTextField.getText()))));
+						if (zero.equals("0")) {localResultTextField.setText("No modulus by 0");}
 					}
-				}if(opt.equals("x")) {
-					localResultTextField.setText(Float.toString(firstNum*(Float.parseFloat(localResultTextField.getText()))));
-				}if(opt.equals("%")) {
-					String zero=localResultTextField.getText();
-					localResultTextField.setText(Float.toString(firstNum%(Float.parseFloat(localResultTextField.getText()))));
-					if (zero.equals("0")) {
-						localResultTextField.setText("No modulus by 0");
+				}catch(NullPointerException e) {
+					System.out.println("null");
+					ScriptEngineManager manager1 = new ScriptEngineManager();
+					ScriptEngine engine1 = manager1.getEngineByName("js");
+					try {
+						Object result = engine1.eval(localResultTextField.getText());
+						System.out.println(result);
+						localResultTextField.setText(Double.toString((double) result));
+					} catch (ScriptException e11) {
+						// TODO Auto-generated catch block
+						localResultTextField.setText("Invalid");
+						e11.printStackTrace();
+					} catch (NullPointerException e11) {}
+					catch(ClassCastException e11) {
+						Object result;
+						try {
+							result = engine1.eval(localResultTextField.getText());
+							localResultTextField.setText(Integer.toString((int) result));
+						} catch (ScriptException e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
+						
 					}
 				}
-				
 			}else {
 				String addText = localResultTextField.getText()+eventLabel;
 				localResultTextField.setText(addText);
@@ -137,7 +158,14 @@ public class MathEvent implements ActionListener, ItemListener, MouseListener{
 				n.setForeground(Color.GREEN);
 				n.setBackground(Color.GREEN);
 				String zero=localResultTextField.getText();
-				if (   (zero.equals("No dividing by 0"))  ||  (zero.equals("No modulus by 0"))  ) {
+				if ((zero.equals("No dividing by 0"))  
+						||  (zero.equals("No modulus by 0"))  
+						||  (zero.contains("Invalid"))) {
+					localResultTextField.setText("");
+				}
+			}else {
+				String valid = localResultTextField.getText();
+				if (valid.contains("Invalid")) {
 					localResultTextField.setText("");
 				}
 			}

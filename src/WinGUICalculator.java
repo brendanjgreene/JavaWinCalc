@@ -63,11 +63,7 @@ public class WinGUICalculator {
 			if (nLabel.equals("AC")||(nLabel.equals("C"))) {
 				n.setForeground(Color.RED);
 				n.setBackground(Color.RED);
-			}else if ((nLabel.equals("+"))||
-					(nLabel.equals("-"))||
-					(nLabel.equals("/"))||
-					(nLabel.equals("x"))||
-					(nLabel.equals("%"))) {
+			}else if ((nLabel.equals("+"))||(nLabel.equals("-"))||(nLabel.equals("/"))||(nLabel.equals("x"))||(nLabel.equals("%"))) {
 				n.setForeground(Color.BLUE);
 				n.setBackground(Color.BLUE);
 			}else if (nLabel.equals("=")) {
