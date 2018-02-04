@@ -26,9 +26,9 @@ public class WinGUICalculator {
 		Panel leftPanel = new Panel();
 		Panel rightPanel = new Panel();
 		Panel botPanel = new Panel();
-		buttonPanel.setLayout(new GridLayout(4,4,20,20));
+		buttonPanel.setLayout(new GridLayout(5,4,20,20));
 		//GridLayout(int rows, int cols, int hgap, int vgap)
-		TextField numberField = new TextField(30);
+		TextField numberField = new TextField(20);
 		Font myFont = new Font("Arial", Font.PLAIN, 30);
 		
 		numberField.setFont(myFont);
@@ -46,10 +46,12 @@ public class WinGUICalculator {
 		F.add(botPanel, BorderLayout.SOUTH);
 		//add button and action listener for each one
 		String[] buttonNames = {
-			    "1","2","3","+",
-			    "4","5","6","-",
+			    "AC","=","C","/",
 			    "7","8","9","x",
-			    "C","0","=","/",
+			    "4","5","6","-",
+			    "1","2","3","+",
+			    "+/-","0",".","%",
+			    
 			  };
 		for (String s: buttonNames) { 
 			Button n = new Button(s);
@@ -58,10 +60,14 @@ public class WinGUICalculator {
 			buttonPanel.add(n);
 			String nLabel=n.getLabel();
 			n.setFont(myFont);
-			if (nLabel.equals("C")) {
+			if (nLabel.equals("AC")||(nLabel.equals("C"))) {
 				n.setForeground(Color.RED);
 				n.setBackground(Color.RED);
-			}else if ((nLabel.equals("+"))||(nLabel.equals("-"))||(nLabel.equals("/"))||(nLabel.equals("x"))){
+			}else if ((nLabel.equals("+"))||
+					(nLabel.equals("-"))||
+					(nLabel.equals("/"))||
+					(nLabel.equals("x"))||
+					(nLabel.equals("%"))) {
 				n.setForeground(Color.BLUE);
 				n.setBackground(Color.BLUE);
 			}else if (nLabel.equals("=")) {
@@ -73,7 +79,7 @@ public class WinGUICalculator {
 		// set size of Frame
 		F.setBackground(Color.BLACK);
 		F.setForeground(null);
-		F.setSize(600, 600);
+		F.setSize(500, 625);
 		// set frame to visible
 		F.setVisible(true);
 		
